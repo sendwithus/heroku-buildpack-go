@@ -271,7 +271,7 @@ cp -R ${build}/src/* "${t}/.go/src/"
 GOPATH="${t}/.go"
 export GOBIN="${build}/bin"
 
-local src="${GOPATH}/src/"
+src="${GOPATH}/src/"
 #    mkdir -p "${src}"
 #    mv -t "${src}" "${t}"/*
 
