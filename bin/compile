@@ -259,10 +259,10 @@ setupGOPATH() {
 
     if test "${GO_SETUP_GOPATH_IN_IMAGE}" = "true"
     then
-        mv -t ${t} ${build}/*
+        mv -t ${t} ${build}/src/*
         GOPATH="${build}"
     else
-        cp -R ${build}/* ${t}
+        cp -R ${build}/src/* ${t}
         GOPATH="${t}/.go"
         echo export GOBIN="${build}/bin"
     fi
@@ -349,7 +349,7 @@ export GOPATH
 eval "$(setupGOPATH ${name})"
 #vendorJSON="${src}/vendor/vendor.json"
 #
-#pkgs=${GO_INSTALL_PACKAGE_SPEC:-$(<${vendorJSON} jq -r 'if .heroku.install then .heroku.install | join(" ") else "default" end')}
+pkgs=${GO_INSTALL_PACKAGE_SPEC:-$(<${vendorJSON} jq -r 'if .heroku.install then .heroku.install | join(" ") else "default" end')}
 #warnPackageSpecOverride
 #handleDefaultPkgSpec
 
