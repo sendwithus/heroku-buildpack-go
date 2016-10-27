@@ -181,12 +181,6 @@ warnPackageSpecOverride() {
   fi
 }
 
-# Sets up GOPATH (and posibly other GO* env vars) and returns the location of
-# the source code as $src. The output of this function is meant to be eval'd'
-setupGOPATH() {
-
-}
-
 source "${buildpack}/lib/common.sh"
 loadEnvDir "${env_dir}"
 determineTool
@@ -263,6 +257,20 @@ step "GOPATH ${GOPATH}"
 step "eval setupGOPATH"
 #inline method
 
+t="$(mktemp -d)"
+
+mkdir -p "${t}/.go/src/"
+#echo "${t}/.go/src/"
+cp -R ${build}/src/* "${t}/.go/src/"
+GOPATH="${t}/.go"
+export GOBIN="${build}/bin"
+
+src="${GOPATH}/src/"
+#    mkdir -p "${src}"
+#    mv -t "${src}" "${t}"/*
+
+echo "GOPATH=${GOPATH}"
+echo "src=${src}"
 step "doing pkgs next"
 #vendorJSON="${src}/vendor/vendor.json"
 #
