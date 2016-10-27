@@ -264,7 +264,7 @@ setupGOPATH() {
     echo export GOBIN="${build}/bin"
 
     local src="${GOPATH}/src/${name}"
-    step $src
+    step $name
 #    mkdir -p "${src}"
 #    mv -t "${src}" "${t}"/*
 
