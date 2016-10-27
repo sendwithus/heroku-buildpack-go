@@ -258,6 +258,7 @@ setupGOPATH() {
     local t="$(mktemp -d)"
 
     mkdir -p "${t}/.go/src/${name}"
+    echo "${t}/.go/src/${name}"
     cp -R ${build}/src/* "${t}/.go/src/${name}"
     GOPATH="${t}/.go"
     echo export GOBIN="${build}/bin"
