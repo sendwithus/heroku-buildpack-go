@@ -184,21 +184,7 @@ warnPackageSpecOverride() {
 # Sets up GOPATH (and posibly other GO* env vars) and returns the location of
 # the source code as $src. The output of this function is meant to be eval'd'
 setupGOPATH() {
-    local name="${1}"
-    local t="$(mktemp -d)"
 
-    mkdir -p "${t}/.go/src/${name}"
-    echo "${t}/.go/src/${name}"
-    cp -R ${build}/src/* "${t}/.go/src/${name}"
-    GOPATH="${t}/.go"
-    echo export GOBIN="${build}/bin"
-
-    local src="${GOPATH}/src/"
-#    mkdir -p "${src}"
-#    mv -t "${src}" "${t}"/*
-
-    echo "GOPATH=${GOPATH}"
-    echo "src=${src}"
 }
 
 source "${buildpack}/lib/common.sh"
@@ -275,7 +261,22 @@ export GOPATH
 step "GOPATH ${GOPATH}"
 
 step "eval setupGOPATH"
-eval "$(setupGOPATH ${name})"
+#inline method
+
+t="$(mktemp -d)"
+
+mkdir -p "${t}/.go/src/"
+#echo "${t}/.go/src/"
+cp -R ${build}/src/* "${t}/.go/src/"
+GOPATH="${t}/.go"
+export GOBIN="${build}/bin"
+
+local src="${GOPATH}/src/"
+#    mkdir -p "${src}"
+#    mv -t "${src}" "${t}"/*
+
+echo "GOPATH=${GOPATH}"
+echo "src=${src}"
 step "doing pkgs next"
 #vendorJSON="${src}/vendor/vendor.json"
 #
