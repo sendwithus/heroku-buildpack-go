@@ -347,20 +347,10 @@ fi
 export GOPATH
 
 eval "$(setupGOPATH ${name})"
-vendorJSON="${src}/vendor/vendor.json"
-
-pkgs=${GO_INSTALL_PACKAGE_SPEC:-$(<${vendorJSON} jq -r 'if .heroku.install then .heroku.install | join(" ") else "default" end')}
-warnPackageSpecOverride
-handleDefaultPkgSpec
 
 unset GIT_DIR # unset git dir or it will mess with goinstall
 cd "${src}"
 
-if test "$(<${vendorJSON} jq -r '.heroku.sync')" != "false"
-then
-    step "Fetching any unsaved dependencies (govendor sync)"
-    govendor sync
-fi
 massagePkgSpecForVendor
 
 step "Running: go install -v ${FLAGS[@]} ${pkgs}"
