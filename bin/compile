@@ -259,9 +259,9 @@ step "eval setupGOPATH"
 
 t="$(mktemp -d)"
 
-mkdir -p "${t}/.go/src/"
+mkdir -p "${t}/.go/src/${GO_INSTALL_PACKAGE_SPEC}"
 #echo "${t}/.go/src/"
-cp -R ${build}/src/* "${t}/.go/src/"
+cp -R ${build}/src/* "${t}/.go/src/${GO_INSTALL_PACKAGE_SPEC}"
 GOPATH="${t}/.go"
 export GOBIN="${build}/bin"
 
@@ -269,12 +269,10 @@ src="${GOPATH}/src/"
 #    mkdir -p "${src}"
 #    mv -t "${src}" "${t}"/*
 
-echo "GOPATH=${GOPATH}"
-echo "src=${src}"
 step "doing pkgs next"
 #vendorJSON="${src}/vendor/vendor.json"
 #
-pkgs=${GO_INSTALL_PACKAGE_SPEC:-$(<${vendorJSON} jq -r 'if .heroku.install then .heroku.install | join(" ") else "default" end')}
+pkgs=${GO_INSTALL_PACKAGE_SPEC}
 #warnPackageSpecOverride
 #handleDefaultPkgSpec
 
