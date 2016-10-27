@@ -263,20 +263,6 @@ step "GOPATH ${GOPATH}"
 step "eval setupGOPATH"
 #inline method
 
-t="$(mktemp -d)"
-
-mkdir -p "${t}/.go/src/"
-#echo "${t}/.go/src/"
-cp -R ${build}/src/* "${t}/.go/src/"
-GOPATH="${t}/.go"
-export GOBIN="${build}/bin"
-
-src="${GOPATH}/src/"
-#    mkdir -p "${src}"
-#    mv -t "${src}" "${t}"/*
-
-echo "GOPATH=${GOPATH}"
-echo "src=${src}"
 step "doing pkgs next"
 #vendorJSON="${src}/vendor/vendor.json"
 #
