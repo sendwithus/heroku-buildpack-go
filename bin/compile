@@ -344,7 +344,7 @@ then
 fi
 
 export GOPATH
-echo $GOPATH
+step ${GOPATH}
 
 eval "$(setupGOPATH ${name})"
 
