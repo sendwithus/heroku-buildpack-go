@@ -277,7 +277,6 @@ setupGOPATH() {
 
 source "${buildpack}/lib/common.sh"
 loadEnvDir "${env_dir}"
-determineTool
 
 ver=$(expandVer $ver)
 url=${GOURL:-$(urlFor $ver)}
@@ -345,6 +344,7 @@ then
 fi
 
 export GOPATH
+echo $GOPATH
 
 eval "$(setupGOPATH ${name})"
 
