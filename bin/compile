@@ -274,6 +274,7 @@ fi
 export GOPATH
 step "GOPATH ${GOPATH}"
 
+step "eval setupGOPATH"
 eval "$(setupGOPATH ${name})"
 step "doing pkgs next"
 #vendorJSON="${src}/vendor/vendor.json"
