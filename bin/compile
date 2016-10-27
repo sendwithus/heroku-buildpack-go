@@ -22,12 +22,7 @@ NC='\033[0m' # No Color
 CURL="curl -s -L --retry 15 --retry-delay 2" # retry for up to 30 seconds
 
 DefaultGoVersion="go1.7.3"
-GlideVersion="v0.12.2"
-GovendorVersion="1.0.8"
-GBVersion="0.4.3"
 PkgErrorsVersion="0.7.1"
-MercurialVersion="3.9"
-# BazaarVersion="2.7.0"
 TOOL=""
 # Default to $SOURCE_VERSION environment variable: https://devcenter.heroku.com/articles/buildpack-api#bin-compile
 GO_LINKER_VALUE=${SOURCE_VERSION}
@@ -149,71 +144,6 @@ reportVer() {
   esac
 }
 
-ensureHG() {
-    local hgv="${1}"
-    local thgp=$(mktemp -d)
-    local hgp="${cache}/hg/${hgv}"
-    #local hgb="${hgp}/hg"
-    if test -d "${hgp}"
-    then
-        step "Using hg v${hgv}"
-    else
-        rm -rf "${cache}/hg"
-        mkdir -p "${hgp}"
-        start "Installing hg ${hgv}"
-          $CURL "https://www.mercurial-scm.org/release/mercurial-${hgv}.tar.gz" | tar -zxf - --strip-components=1 -C ${thgp}
-          pushd "${thgp}" &> /dev/null
-          python setup.py install --force --home=${hgp} &> /dev/null
-          popd &> /dev/null
-        finished
-    fi
-
-    PATH="${hgp}/bin:${PATH}"
-}
-
-ensureBZR() {
-    local bzrv="${1}"
-    local bzrvs=$(echo ${bzrv} | cut -d . -f 1,2)
-    local tbzrp=$(mktemp -d)
-    local bzrp="${cache}/bzr/${bzrv}"
-    if test -d "${bzrp}"
-    then
-        step "Using bzr v${bzrv}"
-    else
-        rm -rf "${cache}/bzr"
-        mkdir -p "${bzrp}"
-        start "Installing bzr ${bzrv}"
-          $CURL "https://launchpad.net/bzr/${bzrvs}/${bzrv}/+download/bzr-${bzrv}.tar.gz" | tar -zxf - --strip-components=1 -C ${tbzrp}
-          pushd "${tbzrp}" &> /dev/null
-          python setup.py install --force --home=${bzrp} &> /dev/null
-          popd &> /dev/null
-        finished
-    fi
-
-    PATH="${bzrp}/bin:${PATH}"
-    export PYTHONPATH="${bzrp}/lib/python:${PYTHONPATH}"
-}
-
-ensureGlide() {
-    local gv=${1}
-    local gvPath="${cache}/glide/${gv}/bin"
-    local gvBin="${gvPath}/glide"
-
-    if test -d "${gvPath}"
-    then
-        step "Using glide ${gv}"
-    else
-      rm -rf "${cache}/glide"
-      mkdir -p "${gvPath}"
-      start "Installing glide ${gv}"
-        $CURL "https://github.com/Masterminds/glide/releases/download/${gv}/glide-${gv}-linux-amd64.tar.gz" | tar -zxf - --strip-components=1 -C ${gvPath}
-        chmod a+x ${gvBin}
-      finished
-    fi
-
-    PATH="${gvPath}:${PATH}"
-}
-
 setGoVersionFromEnvironment() {
   if test -z "${GOVERSION}"
   then
@@ -263,8 +193,7 @@ setupGOPATH() {
     GOPATH="${t}/.go"
     echo export GOBIN="${build}/bin"
 
-    local src="${GOPATH}/src/${name}"
-    step "Name: ${name}"
+    local src="${GOPATH}/src/"
 #    mkdir -p "${src}"
 #    mv -t "${src}" "${t}"/*
 
@@ -344,9 +273,9 @@ fi
 
 export GOPATH
 step "GOPATH ${GOPATH}"
-setupGOPATH ${name}
 
 eval "$(setupGOPATH ${name})"
+step "doing pkgs next"
 #vendorJSON="${src}/vendor/vendor.json"
 #
 pkgs=${GO_INSTALL_PACKAGE_SPEC:-$(<${vendorJSON} jq -r 'if .heroku.install then .heroku.install | join(" ") else "default" end')}
